@@ -20,18 +20,13 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(RegisterRequest request)
         {
-            if (await _context.Users.AnyAsync(x => x.EmailAddress == request.Email.ToLower()))
-                return BadRequest("This e-mail address is already taken!");
-
-            if (await _context.Users.AnyAsync(x => x.UserName == request.Username.ToLower()))
-                return BadRequest("This username is already taken!");
+            if (await _context.Users.AnyAsync(x => x.EmailAddress == request.Email.ToLower())) return BadRequest("This e-mail address is already taken!");
 
             using var hmac = new HMACSHA512();
 
             var user = new User
             {
                 UserName = request.Username.ToLower(),
-                EmailAddress = request.Email.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
                 PasswordSalt = hmac.Key
             };
