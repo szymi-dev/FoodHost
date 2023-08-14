@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Controllers;
 using Server.Data;
+using Server.Dtos;
+using Server.Interfaces;
 using Server.Models;
 
 namespace API.Controllers
@@ -11,14 +13,17 @@ namespace API.Controllers
     public class AccountController : BaseController
     {
         public DataContext _context;
-        public AccountController(DataContext context)
+        private readonly ITokenService _tokenService;
+
+        public AccountController(DataContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(RegisterRequest request)
+        public async Task<ActionResult<UserDto>> Register(RegisterRequest request)
         {
             if (await _context.Users.AnyAsync(x => x.EmailAddress == request.Email.ToLower())) return BadRequest("This e-mail address is already taken!");
 
@@ -27,6 +32,7 @@ namespace API.Controllers
             var user = new User
             {
                 UserName = request.Username.ToLower(),
+                EmailAddress = request.Email.ToLower(),                                                                                                                                                           
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
                 PasswordSalt = hmac.Key
             };
@@ -34,11 +40,16 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new UserDto
+            { 
+                Username = user.UserName,
+                EmailAddress = user.EmailAddress,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login(LoginRequest loginRequest)
+        public async Task<ActionResult<UserDto>> Login(LoginRequest loginRequest)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.EmailAddress == loginRequest.Email);
 
@@ -53,7 +64,12 @@ namespace API.Controllers
                 if (computeHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password!");
             }
 
-            return user;
+            return new UserDto
+            {
+                Username = user.UserName,
+                EmailAddress = user.EmailAddress,
+                Token = _tokenService.CreateToken(user)
+            };
         }
     }
 }
