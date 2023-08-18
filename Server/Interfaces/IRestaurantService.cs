@@ -12,5 +12,7 @@ namespace Server.Interfaces
         Task<Restaurant> UpdateMenuItem(int restaurantId, Restaurant restaurant);
         Task DeleteMenuItemAsync(int menuItemId);
         Task DeleteRestaurantAsync(int restaurantId);
+        bool RestaurantExist(int restaurantId);
+        bool MenuItemExist(int menuItemId);
     }
 }

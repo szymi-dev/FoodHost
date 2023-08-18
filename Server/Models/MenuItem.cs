@@ -5,7 +5,6 @@
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
         public decimal OldPrice { get; set; }
         public decimal SalePrice { get; set; }
         public bool IsVegetarian { get; set; }
@@ -14,6 +13,9 @@
         public bool IsAvailable { get; set; }
         public CuisineType Cuisine { get; set; }
         public bool IsLiked { get; set; }
+        public bool IsReservationAvailable { get; set; }
+        public DateTime ReservationStartTime { get; set; }
+        public DateTime ReservationEndTime { get; set; }
     }
 
     public enum CuisineType
