@@ -26,7 +26,7 @@ namespace Server.Services
 
         public async Task<User> GetUserByUsername(string username)
         {
-            return await _context.Users.Where(u => u.UserName == username).FirstOrDefaultAsync();
+            return await _context.Users.Where(u => u.UserName == username).Include(x => x.Restaurants).FirstOrDefaultAsync();
         }
     }
 }

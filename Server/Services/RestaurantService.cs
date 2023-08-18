@@ -1,4 +1,8 @@
-﻿using Server.Data;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Server.Data;
+using Server.Dtos;
 using Server.Interfaces;
 using Server.Models;
 
@@ -7,14 +11,34 @@ namespace Server.Services
     public class RestaurantService : IRestaurantService
     {
         private readonly DataContext _context;
-        public RestaurantService(DataContext context)
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        public RestaurantService(DataContext context, IUserService userService, IMapper mapper)
         {
             _context = context;
+            _userService = userService;
+            _mapper = mapper;
         }
 
-        public Task<Restaurant> RegisterNewRestaurantAsync(int userId, Restaurant restaurant)
+        public async Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurantDto)
         {
-            throw new NotImplementedException();
+            var user = await _userService.GetUserByUsername(username);
+
+            if(user == null) throw new ArgumentException("No user found");
+
+            var restaurant = new Restaurant
+            {
+                Name = restaurantDto.Name,
+                Description = restaurantDto.Description,
+                Address = restaurantDto.Address,
+                PhoneNumber = restaurantDto.PhoneNumber
+            };
+
+            user.Restaurants.Add(restaurant);
+            await _context.SaveChangesAsync();
+
+            var restaurantToReturn = _mapper.Map<Restaurant, RestaurantDto>(restaurant);
+            return restaurantToReturn;
         }
         public Task<MenuItem> AddMenuItemAsync(int restaurantId, MenuItem menuItem)
         {
