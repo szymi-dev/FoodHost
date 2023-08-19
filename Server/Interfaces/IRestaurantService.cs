@@ -8,7 +8,7 @@ namespace Server.Interfaces
         Task<List<Restaurant>> GetAllRestaurants();
         Task<Restaurant> GetRestaurant(int id);
         Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurant);
-        Task<Restaurant> UpdateRestaurantAsync(int restaurantId, Restaurant restaurant);
+        Task<RestaurantDto> UpdateRestaurantAsync(int restaurantId, RestaurantDto restaurant);
         Task<MenuItem> AddMenuItemAsync(int restaurantId, MenuItem menuItem);
         Task<Restaurant> UpdateMenuItem(int restaurantId, Restaurant restaurant);
         Task DeleteMenuItemAsync(int menuItemId);
