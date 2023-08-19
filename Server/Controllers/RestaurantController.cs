@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace Server.Controllers
 {
+    [Authorize]
     public class RestaurantController : BaseController
     {
         private readonly IRestaurantService _restaurantService;
@@ -23,6 +24,14 @@ namespace Server.Controllers
             return restaurants;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Restaurant>> GetRestaurant([FromRoute] int id)
+        {
+            var restaurant = await _restaurantService.GetRestaurant(id);
+
+            return restaurant;
+        }
+
         [HttpPost("RegisterRestaurant")]
         public async Task<ActionResult<RestaurantDto>> RegisterNewRestaurant([FromBody] RestaurantDto restaurantDto)
         {
@@ -36,6 +45,20 @@ namespace Server.Controllers
         {
             var restaurantToUpdate = await _restaurantService.UpdateRestaurantAsync(restaurantId, restaurantDto);
             return Ok(restaurantToUpdate);
+        }
+
+        [HttpDelete("DeleteRestaurant/{restaurantId}")]
+        public async Task<ActionResult> DeleteRestaurant([FromRoute] int restaurantId)
+        {
+            try
+            {
+                await _restaurantService.DeleteRestaurantAsync(restaurantId);
+                return Ok("Restaurant deleted succesfully");
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

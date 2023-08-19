@@ -23,7 +23,12 @@ namespace Server.Services
 
         public async Task<List<Restaurant>> GetAllRestaurants()
         {
-            return await _context.Restaurants.Include(x => x.Menu).ToListAsync();
+            return await _context.Restaurants.Include(x => x.Menu).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Restaurant> GetRestaurant(int id)
+        {
+            return await _context.Restaurants.FindAsync(id);
         }
 
         public async Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurantDto)
@@ -67,6 +72,20 @@ namespace Server.Services
             return updatedRestaurantDtoMapped;
         }
 
+        public async Task DeleteRestaurantAsync(int restaurantId)
+        {
+            var restaurantToDelete = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == restaurantId);
+
+            if (restaurantToDelete == null)
+            {
+                throw new ArgumentException("Restaurant with provided ID does not exist.");
+            }
+
+            _context.Restaurants.Remove(restaurantToDelete);
+
+            await _context.SaveChangesAsync();
+        }
+
         public Task<MenuItem> AddMenuItemAsync(int restaurantId, MenuItem menuItem)
         {
             throw new NotImplementedException();
@@ -75,17 +94,7 @@ namespace Server.Services
         public Task DeleteMenuItemAsync(int menuItemId)
         {
             throw new NotImplementedException();
-        }
-
-        public Task DeleteRestaurantAsync(int restaurantId)
-        {
-            throw new NotImplementedException();
-        }       
-
-        public Task<Restaurant> GetRestaurant(int id)
-        {
-            throw new NotImplementedException();
-        }
+        }      
 
         public bool MenuItemExist(int menuItemId)
         {
