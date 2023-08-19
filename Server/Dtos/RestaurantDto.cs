@@ -1,8 +1,9 @@
-﻿namespace Server.Models
+﻿using Server.Models;
+
+namespace Server.Dtos
 {
-    public class Restaurant
+    public class RestaurantDto
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
