@@ -29,7 +29,7 @@ const LoginForm: React.FC = () => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       console.log("Validation passed. Submitted data:", formData);
-      setValidationErrors({}); // Wyczyść błędy po poprawnym przesłaniu formularza
+      setValidationErrors({});
     } catch (errors) {
       if (errors instanceof Yup.ValidationError) {
         const formattedErrors: { [key: string]: string } = {};
