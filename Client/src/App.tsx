@@ -5,6 +5,7 @@ import { selectTheme, toggleTheme } from "./store/reducers/themeSlice";
 import { AppDispatch } from "./store";
 import { darkTheme, lightTheme } from "./themes";
 import { CssBaseline } from "@mui/material";
+import Header from "./components/Header";
 
 function App() {
   const theme = useSelector(selectTheme);
@@ -17,11 +18,7 @@ function App() {
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <CssBaseline />
       <div className="App">
-        <header className="App-header">
-          <button onClick={handleThemeToggle}>Toggle Theme</button>
-          <p>Current Theme: {theme}</p>
-          {/* Reszta Twojej aplikacji */}
-        </header>
+        <Header currentTheme={theme} onThemeToggle={handleThemeToggle} />
       </div>
     </ThemeProvider>
   );
