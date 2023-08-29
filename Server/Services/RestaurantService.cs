@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Server.Services
 
         public async Task<List<Restaurant>> GetAllRestaurants()
         {
-            return await _context.Restaurants.Include(x => x.Menu).AsNoTracking().ToListAsync();
+            return await _context.Restaurants.Include(x => x.MenuItems).AsNoTracking().ToListAsync();
         }
 
         public async Task<Restaurant> GetRestaurant(int id)
@@ -86,9 +87,37 @@ namespace Server.Services
             await _context.SaveChangesAsync();
         }
 
-        public Task<MenuItem> AddMenuItemAsync(int restaurantId, MenuItem menuItem)
+        public async Task<MenuItemDto> AddMenuItemAsync(int restaurantId, string email, MenuItemDto menuItemDto)
         {
-            throw new NotImplementedException();
+            var user = await _userService.GetUserByEmail(email);
+            var restaurant = await GetRestaurant(restaurantId);
+
+            if (user == null) {
+                throw new NotImplementedException($"There is no such user with email {email}");
+            }
+            if (restaurant == null) { 
+                throw new NotImplementedException($"There is no restaurant with such Id {restaurantId}");
+            }
+
+            var menuItem = new MenuItem
+            {
+                Name = menuItemDto.Name,
+                Description = menuItemDto.Description,
+                OldPrice = menuItemDto.OldPrice,
+                SalePrice = menuItemDto.SalePrice,
+                IsVegetarian = menuItemDto.IsVegetarian,
+                ExpirationDate = menuItemDto.ExpirationDate,
+                Quantity = menuItemDto.Quantity,
+                IsAvailable = menuItemDto.IsAvailable,
+                Cuisine = menuItemDto.Cuisine,
+            };
+
+
+
+            // Zwracasz przekształcony obiekt DTO (możesz też zwrócić zmapowany obiekt MenuItem, jeśli to konieczne)
+            return menuItemDto;
+
+
         }
 
         public Task DeleteMenuItemAsync(int menuItemId)

@@ -16,6 +16,8 @@
         public bool IsReservationAvailable { get; set; }
         public DateTime ReservationStartTime { get; set; }
         public DateTime ReservationEndTime { get; set; }
+        public int? RestaurantId { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 
     public enum CuisineType

@@ -28,5 +28,10 @@ namespace Server.Services
         {
             return await _context.Users.Where(u => u.UserName == username).Include(x => x.Restaurants).FirstOrDefaultAsync();
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.Where(u => u.EmailAddress == email).Include(x => x.Restaurants).FirstOrDefaultAsync();
+        }
     }
 }
