@@ -1,4 +1,6 @@
-﻿namespace Server.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Server.Models
 {
     public class Restaurant
     {
@@ -7,6 +9,8 @@
         public string Description { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
-        public List<MenuItem> Menu { get; set; } = new List<MenuItem>();
+        public int? UserId { get; set; }
+        public User User { get; set; }
+        public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 }

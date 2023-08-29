@@ -25,8 +25,12 @@ namespace Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<MenuItem>().Property(b => b.OldPrice).HasColumnType("decimal(18, 2)");
+            modelBuilder.Entity<MenuItem>().Property(b => b.SalePrice).HasColumnType("decimal(18, 2)");
+
             modelBuilder.Entity<ItemLike>()
                 .HasKey(k => new { k.UserId, k.MenuItemId });
+
 
             modelBuilder.Entity<ItemLike>()
                 .HasOne(k => k.User)
@@ -36,19 +40,6 @@ namespace Server.Data
 
             // Jeżeli będzie trzeba skonfigurować drugi raz ten sam model to OnDelete(DeleteBehaviour.NoAction) - tylko w przypadku SQL SERVER !!!
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
-            {
-                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                {
-                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
-
-                    foreach (var property in properties)
-                    {
-                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
-                    }
-                }
-            }
         }
     }
 }

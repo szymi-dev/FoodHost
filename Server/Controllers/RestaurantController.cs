@@ -60,5 +60,17 @@ namespace Server.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("AddMenuItem/{restaurantId}")]
+        public async Task<ActionResult<MenuItemDto>> AddMenuItem([FromRoute] int restaurantId, [FromBody] MenuItemDto menuItemDto)
+        {
+            var email = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var restaurant = await _restaurantService.GetRestaurant(restaurantId);
+
+            var menuItem = await _restaurantService.AddMenuItemAsync(restaurantId, email, menuItemDto);
+
+            return menuItem;
+        }
     }
 }

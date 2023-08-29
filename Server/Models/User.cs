@@ -8,7 +8,6 @@
         public byte[] PasswordHash { get; set; } = new byte[32];
         public byte[] PasswordSalt { get; set; } = new byte[32];
         public List<Restaurant> Restaurants { get; set; } = new();
-        public List<MenuItem> Products { get; set; } = new();
         public List<ItemLike> LikedProducts { get; set; } = new();
     }
 }

@@ -9,7 +9,7 @@ namespace Server.Interfaces
         Task<Restaurant> GetRestaurant(int id);
         Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurant);
         Task<RestaurantDto> UpdateRestaurantAsync(int restaurantId, RestaurantDto restaurant);
-        Task<MenuItem> AddMenuItemAsync(int restaurantId, MenuItem menuItem);
+        Task<MenuItemDto> AddMenuItemAsync(int restaurantId, string username, MenuItemDto menuItem);
         Task<Restaurant> UpdateMenuItem(int restaurantId, Restaurant restaurant);
         Task DeleteMenuItemAsync(int menuItemId);
         Task DeleteRestaurantAsync(int restaurantId);
