@@ -9,6 +9,8 @@ namespace Server.Mapper
         public AutoMapperConfig()
         {
             CreateMap<Restaurant, RestaurantDto>();
+            CreateMap<MenuItem, MenuItemDto>();
+
         }
     }
 }
