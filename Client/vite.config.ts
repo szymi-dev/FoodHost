@@ -9,4 +9,13 @@ export default defineConfig({
       localsConvention: "dashes",
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:46566",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });
