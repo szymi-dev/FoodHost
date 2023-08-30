@@ -16,6 +16,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import ModeNightIcon from "@mui/icons-material/ModeNight";
+import { useSelector } from "react-redux";
+import { AuthState } from "../store/reducers/authSlice";
 
 interface HeaderI {
   currentTheme: string;
@@ -23,7 +25,7 @@ interface HeaderI {
 }
 
 const Header: React.FC<HeaderI> = ({ currentTheme, onThemeToggle }) => {
-  const pages = ["Products", "Pricing", "Blog"];
+  const pages = ["Home", "Orders", "About us"];
   const settings = ["Profile", "Account", "Dashboard", "Logout"];
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -31,6 +33,7 @@ const Header: React.FC<HeaderI> = ({ currentTheme, onThemeToggle }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
+  const isLoggedIn = useSelector((state: AuthState) => state.isLoggedIn);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -152,11 +155,18 @@ const Header: React.FC<HeaderI> = ({ currentTheme, onThemeToggle }) => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+            {isLoggedIn ? (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Button sx={{ my: 2, color: "white", display: "block" }}>
+                Login
+              </Button>
+            )}
+
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
