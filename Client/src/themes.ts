@@ -20,6 +20,9 @@ export const lightTheme = createTheme({
     info: {
       main: "#010101",
     },
+    error: {
+      main: "#ff0303",
+    },
     warning: {
       main: "#ffa726",
     },
@@ -58,6 +61,9 @@ export const darkTheme = createTheme({
     },
     warning: {
       main: "#ffa726",
+    },
+    error: {
+      main: "#ff0303",
     },
     success: {
       main: "#08c873",

@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 const Login = () => {
+  const [loginMode, setLoginMode] = useState<boolean>(true);
+
   return (
     <div>
-      <LoginForm />
+      {loginMode ? (
+        <>
+          <LoginForm />
+        </>
+      ) : (
+        <>
+          <RegisterForm />
+        </>
+      )}
     </div>
   );
 };
