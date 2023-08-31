@@ -12,6 +12,6 @@ namespace Server.Dtos
         public DateTime ExpirationDate { get; set; }
         public int Quantity { get; set; }
         public bool IsAvailable { get; set; }
-        public CuisineType Cuisine { get; set; }
+        public string Cuisine { get; set; } = string.Empty;
     }
 }

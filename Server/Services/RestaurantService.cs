@@ -34,9 +34,7 @@ namespace Server.Services
 
         public async Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurantDto)
         {
-            var user = await _userService.GetUserByUsername(username);
-
-            if(user == null) throw new ArgumentException("No user found");
+            var user = await _userService.GetUserByUsername(username) ?? throw new ArgumentException("No user found");
 
             var restaurant = new Restaurant
             {
@@ -55,12 +53,7 @@ namespace Server.Services
 
         public async Task<RestaurantDto> UpdateRestaurantAsync(int restaurantId, RestaurantDto updatedRestaurantDto)
         {
-            var existingRestaurant = await _context.Restaurants.FindAsync(restaurantId);
-
-            if (existingRestaurant == null)
-            {
-                throw new ArgumentException("Restaurant not found");
-            }
+            var existingRestaurant = await _context.Restaurants.FindAsync(restaurantId) ?? throw new ArgumentException("Restaurant not found");
 
             existingRestaurant.Name = updatedRestaurantDto.Name ?? existingRestaurant.Name;
             existingRestaurant.Description = updatedRestaurantDto.Description ?? existingRestaurant.Description;
@@ -87,18 +80,14 @@ namespace Server.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<MenuItemDto> AddMenuItemAsync(int restaurantId, string email, MenuItemDto menuItemDto)
+        public async Task<MenuItemDto> AddMenuItemToRestaurantAsync(int restaurantId, string username, MenuItemDto menuItemDto)
         {
-            var user = await _userService.GetUserByEmail(email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username)
+                ?? throw new Exception("Użytkownik o podanym username nie istnieje.");
+
             var restaurant = await GetRestaurant(restaurantId);
 
-            if (user == null) {
-                throw new NotImplementedException($"There is no such user with email {email}");
-            }
-            if (restaurant == null) { 
-                throw new NotImplementedException($"There is no restaurant with such Id {restaurantId}");
-            }
-
+            // Tworzenie nowego elementu menu na podstawie DTO
             var menuItem = new MenuItem
             {
                 Name = menuItemDto.Name,
@@ -109,15 +98,24 @@ namespace Server.Services
                 ExpirationDate = menuItemDto.ExpirationDate,
                 Quantity = menuItemDto.Quantity,
                 IsAvailable = menuItemDto.IsAvailable,
-                Cuisine = menuItemDto.Cuisine,
+                RestaurantId = restaurantId
             };
+            menuItem.Cuisine = (CuisineType)Enum.Parse(typeof(CuisineType), menuItemDto.Cuisine);
 
+            // Dodawanie elementu menu do restauracji
+            restaurant.MenuItems.Add(menuItem);
 
-
-            // Zwracasz przekształcony obiekt DTO (możesz też zwrócić zmapowany obiekt MenuItem, jeśli to konieczne)
-            return menuItemDto;
-
-
+            try
+            {
+                await _context.SaveChangesAsync();
+                var addedMenuItemDto = _mapper.Map<MenuItemDto>(menuItem);
+                return addedMenuItemDto;
+            }
+            catch (Exception ex)
+            {
+                // Tutaj możesz obsłużyć błąd, np. zalogować go
+                throw new Exception("Nie udało się dodać elementu menu.");
+            }
         }
 
         public Task DeleteMenuItemAsync(int menuItemId)
