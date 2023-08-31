@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import jwt_decode from "jwt-decode";
 import { RootState } from "..";
 import { loginUser } from "../actions/authAction";
 
@@ -11,13 +12,13 @@ export interface AuthState {
   success: boolean;
 }
 
-const userToken = localStorage.getItem("userToken")
-  ? localStorage.getItem("userToken")
+const userToken = localStorage.getItem("token")
+  ? localStorage.getItem("token")
   : null;
 const initialState: AuthState = {
   loading: false,
-  isLoggedIn: userToken !== null ? true : false,
-  userInfo: {},
+  isLoggedIn: userToken != null ? true : false,
+  userInfo: jwt_decode(userToken as string),
   userToken,
   error: null,
   success: false,
@@ -25,7 +26,16 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: state => {
+      localStorage.removeItem("token");
+      state.isLoggedIn = false;
+      state.loading = false;
+      state.userInfo = {};
+      state.userToken = null;
+      state.error = null;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(loginUser.pending, (state: AuthState) => {
@@ -46,5 +56,6 @@ const authSlice = createSlice({
       });
   },
 });
-export const selectTheme = (state: RootState) => state.auth;
+export const { logout } = authSlice.actions;
+export const authTheme = (state: RootState) => state.auth;
 export default authSlice.reducer;

@@ -8,6 +8,7 @@ interface LoginI {
 const config = {
   headers: { "Content-Type": "application/json" },
 };
+
 const login = ({ email, password }: LoginI) => {
   return axios
     .post(
@@ -26,13 +27,8 @@ const login = ({ email, password }: LoginI) => {
     });
 };
 
-const logout = () => {
-  localStorage.removeItem("token");
-};
-
 const authService = {
   login,
-  logout,
 };
 
 export default authService;
