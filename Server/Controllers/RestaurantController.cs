@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.Dtos;
 using Server.Interfaces;
 using Server.Models;
@@ -64,13 +65,14 @@ namespace Server.Controllers
         [HttpPost("AddMenuItem/{restaurantId}")]
         public async Task<ActionResult<MenuItemDto>> AddMenuItem([FromRoute] int restaurantId, [FromBody] MenuItemDto menuItemDto)
         {
-            var email = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var restaurant = await _restaurantService.GetRestaurant(restaurantId);
+            menuItemDto.Cuisine = menuItemDto.Cuisine.ToString();
+            var menuItem = await _restaurantService.AddMenuItemToRestaurantAsync(restaurantId, username, menuItemDto);
 
-            var menuItem = await _restaurantService.AddMenuItemAsync(restaurantId, email, menuItemDto);
-
-            return menuItem;
+            return menuItem != null
+                ? Ok(menuItem)
+                : BadRequest("Failed to add menu item.");
         }
     }
 }
