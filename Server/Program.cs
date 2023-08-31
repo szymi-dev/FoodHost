@@ -48,6 +48,7 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:5173"));
 });
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,6 +61,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 
 app.UseCors();
+
 
 app.UseAuthentication();
 
