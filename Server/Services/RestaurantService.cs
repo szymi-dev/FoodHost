@@ -29,7 +29,7 @@ namespace Server.Services
 
         public async Task<Restaurant> GetRestaurant(int id)
         {
-            return await _context.Restaurants.FindAsync(id);
+            return await _context.Restaurants.Include(x => x.MenuItems).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurantDto)
@@ -80,14 +80,13 @@ namespace Server.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<MenuItemDto> AddMenuItemToRestaurantAsync(int restaurantId, string username, MenuItemDto menuItemDto)
+        public async Task<string> AddMenuItemToRestaurantAsync(int restaurantId, string username, MenuItemDto menuItemDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username)
                 ?? throw new Exception("Użytkownik o podanym username nie istnieje.");
 
             var restaurant = await GetRestaurant(restaurantId);
 
-            // Tworzenie nowego elementu menu na podstawie DTO
             var menuItem = new MenuItem
             {
                 Name = menuItemDto.Name,
@@ -102,22 +101,39 @@ namespace Server.Services
             };
             menuItem.Cuisine = (CuisineType)Enum.Parse(typeof(CuisineType), menuItemDto.Cuisine);
 
-            // Dodawanie elementu menu do restauracji
             restaurant.MenuItems.Add(menuItem);
 
             try
             {
                 await _context.SaveChangesAsync();
-                var addedMenuItemDto = _mapper.Map<MenuItemDto>(menuItem);
-                return addedMenuItemDto;
+                return "Produkt został dodany pomyślnie!";
             }
             catch (Exception ex)
             {
-                // Tutaj możesz obsłużyć błąd, np. zalogować go
                 throw new Exception("Nie udało się dodać elementu menu.");
             }
         }
 
+        public async Task<List<MenuItemDto>> GetRestaurantMenuItemsAsync(int restaurantId)
+        {
+            var restaurant = await GetRestaurant(restaurantId) ?? throw new Exception("Nie istnieje restauracja o podanym Id!");
+
+            var menuItemsDto = restaurant.MenuItems.Select(item => new MenuItemDto
+            {
+                Name = item.Name,
+                Description = item.Description,
+                OldPrice = item.OldPrice,
+                SalePrice = item.SalePrice,
+                IsVegetarian = item.IsVegetarian,
+                ExpirationDate = item.ExpirationDate,
+                Quantity = item.Quantity,
+                IsAvailable = item.IsAvailable,
+                Cuisine = item.Cuisine.ToString()
+            }).ToList();
+
+            return menuItemsDto;
+
+        }
         public Task DeleteMenuItemAsync(int menuItemId)
         {
             throw new NotImplementedException();
@@ -137,5 +153,6 @@ namespace Server.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

@@ -9,8 +9,9 @@ namespace Server.Interfaces
         Task<Restaurant> GetRestaurant(int id);
         Task<RestaurantDto> RegisterNewRestaurantAsync(string username, RestaurantDto restaurant);
         Task<RestaurantDto> UpdateRestaurantAsync(int restaurantId, RestaurantDto restaurant);
-        Task<MenuItemDto> AddMenuItemToRestaurantAsync(int restaurantId, string username, MenuItemDto menuItem);
+        Task<string> AddMenuItemToRestaurantAsync(int restaurantId, string username, MenuItemDto menuItem);
         Task<Restaurant> UpdateMenuItem(int restaurantId, Restaurant restaurant);
+        Task<List<MenuItemDto>> GetRestaurantMenuItemsAsync(int restaurantId);
         Task DeleteMenuItemAsync(int menuItemId);
         Task DeleteRestaurantAsync(int restaurantId);
         bool RestaurantExist(int restaurantId);
