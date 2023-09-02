@@ -132,7 +132,24 @@ namespace Server.Services
             }).ToList();
 
             return menuItemsDto;
+        }
 
+        public async Task<List<MenuItemDto>> GetMenuItems()
+        {
+            var menuItemsDto = await _context.MenuItems.Select(item => new MenuItemDto
+            {
+                Name = item.Name,
+                Description = item.Description,
+                OldPrice = item.OldPrice,
+                SalePrice = item.SalePrice,
+                IsVegetarian = item.IsVegetarian,
+                ExpirationDate = item.ExpirationDate,
+                Quantity = item.Quantity,
+                IsAvailable = item.IsAvailable,
+                Cuisine = item.Cuisine.ToString()
+            }).ToListAsync();
+
+            return menuItemsDto;
         }
         public Task DeleteMenuItemAsync(int menuItemId)
         {
