@@ -63,7 +63,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("AddMenuItem/{restaurantId}")]
-        public async Task<ActionResult<MenuItemDto>> AddMenuItem([FromRoute] int restaurantId, [FromBody] MenuItemDto menuItemDto)
+        public async Task<ActionResult<string>> AddMenuItem([FromRoute] int restaurantId, [FromBody] MenuItemDto menuItemDto)
         {
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -71,8 +71,28 @@ namespace Server.Controllers
             var menuItem = await _restaurantService.AddMenuItemToRestaurantAsync(restaurantId, username, menuItemDto);
 
             return menuItem != null
-                ? Ok(menuItem)
+                ? Ok("Produkt został dodany pomyślnie!")
                 : BadRequest("Failed to add menu item.");
+        }
+
+        [HttpGet("MenuItems/{restaurantId}")]
+        public async Task<ActionResult<List<MenuItemDto>>> GetRestaurantMenuItemsAsync([FromRoute] int restaurantId)
+        {
+            var menuItems = await _restaurantService.GetRestaurantMenuItemsAsync(restaurantId);
+
+            return menuItems != null
+                ? Ok(menuItems)
+                : BadRequest("Failed to load menu items!");
+        }
+
+        [HttpGet("MenuItems")]
+        public async Task<ActionResult<List<MenuItemDto>>> GetMenuItemsAsync()
+        {
+            var menuItems = await _restaurantService.GetMenuItems();
+
+            return menuItems != null
+                ? Ok(menuItems)
+                : BadRequest("Failed to load menu items!");
         }
     }
 }
