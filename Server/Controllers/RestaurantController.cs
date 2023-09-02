@@ -84,7 +84,6 @@ namespace Server.Controllers
                 ? Ok(menuItems)
                 : BadRequest("Failed to load menu items!");
         }
-
         [HttpGet("MenuItems")]
         public async Task<ActionResult<List<MenuItemDto>>> GetMenuItemsAsync()
         {
