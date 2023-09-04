@@ -154,20 +154,23 @@ const LoginForm: React.FC<LoginFormProps> = props => {
           <CardContent>
             <p>You don't have account?</p>
             <Link underline="none" sx={{ cursor: "pointer" }}>
-              <Button onClick={props.changeFormHandler}> Create account</Button>
+              <Button
+                sx={{}}
+                variant="contained"
+                onClick={props.changeFormHandler}
+              >
+                {" "}
+                Create account
+              </Button>
             </Link>
           </CardContent>
           <CardContent>
             <Button
-              sx={{ fontWeight: "bold", letterSpacing: "1px" }}
+              sx={{ letterSpacing: "1px" }}
               type="submit"
               variant="contained"
             >
-              {loading ? (
-                <MoonLoader size={20} color="#ffffff" />
-              ) : (
-                <> Submit</>
-              )}
+              {loading ? <MoonLoader size={20} color="#ffffff" /> : <> Login</>}
             </Button>
           </CardContent>
         </Card>
