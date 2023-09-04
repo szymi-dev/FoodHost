@@ -18,6 +18,7 @@
         public DateTime ReservationEndTime { get; set; }
         public int? RestaurantId { get; set; }
         public Restaurant Restaurant { get; set; }
+        public string ImageUrl { get; set; }
     }
 
     public enum CuisineType
