@@ -2,6 +2,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, TextField } from "@mui/material";
 import styles from "./RegisterForm.module.scss";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../store/actions/authAction";
 interface RegisterFormProps {
   changeFormHandler: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -29,6 +31,7 @@ const validationSchema = yup.object({
 });
 
 const RegisterForm: React.FC<RegisterFormProps> = props => {
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -39,6 +42,15 @@ const RegisterForm: React.FC<RegisterFormProps> = props => {
     validationSchema: validationSchema,
     onSubmit: values => {
       console.log("Form Values:", values);
+      dispatch(
+        registerUser({
+          username: formik.values.username,
+          email: formik.values.email,
+          password: formik.values.password,
+          confirmPassword: formik.values.confirm,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any
+      );
 
       // You can also display a message in the console
       console.log("Form submitted successfully!");

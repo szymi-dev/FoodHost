@@ -5,10 +5,40 @@ interface LoginI {
   email: string;
   password: string;
 }
+interface RegisterI {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 const config = {
   headers: { "Content-Type": "application/json" },
 };
 
+const register = ({
+  username,
+  email,
+  password,
+  confirmPassword,
+}: RegisterI) => {
+  return axios
+    .post(
+      API_URL + "/api/Account/register",
+      {
+        username,
+        email,
+        password,
+        confirmPassword,
+      },
+      config
+    )
+    .then(response => {
+      if (response) {
+        console.log(response);
+        return response;
+      }
+    });
+};
 const login = ({ email, password }: LoginI) => {
   return axios
     .post(
@@ -29,6 +59,7 @@ const login = ({ email, password }: LoginI) => {
 
 const authService = {
   login,
+  register,
 };
 
 export default authService;
