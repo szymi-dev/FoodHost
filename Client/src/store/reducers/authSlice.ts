@@ -6,8 +6,8 @@ import { loginUser } from "../actions/authAction";
 export interface AuthState {
   loading: boolean;
   isLoggedIn: boolean;
-  userInfo: object;
-  userToken: unknown;
+  userInfo: object | null;
+  userToken: unknown | null;
   error: unknown;
   success: boolean;
 }
@@ -18,7 +18,7 @@ const userToken = localStorage.getItem("token")
 const initialState: AuthState = {
   loading: false,
   isLoggedIn: userToken != null ? true : false,
-  userInfo: jwt_decode(userToken as string),
+  userInfo: userToken != null ? jwt_decode(userToken as string) : null,
   userToken,
   error: null,
   success: false,

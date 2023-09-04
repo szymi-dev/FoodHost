@@ -22,8 +22,11 @@ import { RootState } from "../store";
 import { MoonLoader } from "react-spinners";
 import { loginUser } from "../store/actions/authAction";
 import styles from "./LoginForm.module.scss";
+interface LoginFormProps {
+  changeFormHandler: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<LoginFormProps> = props => {
   const { loading } = useSelector((state: RootState) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -151,7 +154,7 @@ const LoginForm: React.FC = () => {
           <CardContent>
             <p>You don't have account?</p>
             <Link underline="none" sx={{ cursor: "pointer" }}>
-              Create account
+              <Button onClick={props.changeFormHandler}> Create account</Button>
             </Link>
           </CardContent>
           <CardContent>
