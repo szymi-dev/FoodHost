@@ -4,16 +4,20 @@ import RegisterForm from "../components/RegisterForm";
 
 const Login = () => {
   const [loginMode, setLoginMode] = useState<boolean>(true);
+  const changeFormHandle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setLoginMode(!loginMode);
+  };
 
   return (
     <div>
       {loginMode ? (
         <>
-          <LoginForm />
+          <LoginForm changeFormHandler={changeFormHandle} />
         </>
       ) : (
         <>
-          <RegisterForm />
+          <RegisterForm changeFormHandler={changeFormHandle} />
         </>
       )}
     </div>
