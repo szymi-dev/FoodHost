@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Avatar,
@@ -16,8 +16,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import ModeNightIcon from "@mui/icons-material/ModeNight";
-import { useSelector } from "react-redux";
-import { AuthState } from "../store/reducers/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthState, authTheme } from "../store/reducers/authSlice";
+import { logout } from "../store/reducers/authSlice";
+import { AppDispatch } from "../store";
 
 interface HeaderI {
   currentTheme: string;
@@ -27,19 +29,23 @@ interface HeaderI {
 const Header: React.FC<HeaderI> = ({ currentTheme, onThemeToggle }) => {
   const pages = ["Home", "Orders", "About us"];
   const settings = ["Profile", "Account", "Dashboard", "Logout"];
+  const dispatch = useDispatch<AppDispatch>();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
-  const isLoggedIn = useSelector((state: AuthState) => state.isLoggedIn);
+  const { isLoggedIn } = useSelector(authTheme);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   const handleCloseNavMenu = () => {
@@ -185,7 +191,15 @@ const Header: React.FC<HeaderI> = ({ currentTheme, onThemeToggle }) => {
             >
               {settings.map(setting => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Button
+                    onClick={
+                      setting === "Logout" ? handleLogout : handleCloseNavMenu
+                    }
+                  >
+                    <Typography color={"white"} textAlign="center">
+                      {setting}
+                    </Typography>
+                  </Button>
                 </MenuItem>
               ))}
             </Menu>

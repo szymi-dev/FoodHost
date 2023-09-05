@@ -2,6 +2,11 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, TextField } from "@mui/material";
 import styles from "./RegisterForm.module.scss";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../store/actions/authAction";
+interface RegisterFormProps {
+  changeFormHandler: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
 const validationSchema = yup.object({
   email: yup
@@ -25,7 +30,8 @@ const validationSchema = yup.object({
     }),
 });
 
-const RegisterForm = () => {
+const RegisterForm: React.FC<RegisterFormProps> = props => {
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -34,8 +40,17 @@ const RegisterForm = () => {
       confirm: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: values => {
       console.log("Form Values:", values);
+      dispatch(
+        registerUser({
+          username: formik.values.username,
+          email: formik.values.email,
+          password: formik.values.password,
+          confirmPassword: formik.values.confirm,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any
+      );
 
       // You can also display a message in the console
       console.log("Form submitted successfully!");
@@ -53,7 +68,7 @@ const RegisterForm = () => {
 
           <TextField
             fullWidth
-            autoComplete='off'
+            autoComplete="off"
             variant="standard"
             name="username"
             label="Username"
@@ -66,7 +81,7 @@ const RegisterForm = () => {
           <TextField
             sx={{ mt: 8 }}
             fullWidth
-            autoComplete='off'
+            autoComplete="off"
             variant="standard"
             name="email"
             label="Email"
@@ -80,7 +95,7 @@ const RegisterForm = () => {
             fullWidth
             variant="standard"
             sx={{ my: 8 }}
-            autoComplete='off'
+            autoComplete="off"
             id="password"
             name="password"
             label="Password"
@@ -93,7 +108,7 @@ const RegisterForm = () => {
           />
           <TextField
             fullWidth
-            autoComplete='off'
+            autoComplete="off"
             variant="standard"
             name="confirm"
             label="Confirm Password"
@@ -107,9 +122,9 @@ const RegisterForm = () => {
           <div className={styles.text_container}>
             <p>
               Already have an account?{" "}
-              <a className={styles.link} href="/">
+              <button onClick={props.changeFormHandler} className={styles.link}>
                 Login
-              </a>
+              </button>
             </p>
           </div>
           <Button color="primary" variant="contained" fullWidth type="submit">
