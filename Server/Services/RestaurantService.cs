@@ -128,7 +128,8 @@ namespace Server.Services
                 ExpirationDate = item.ExpirationDate,
                 Quantity = item.Quantity,
                 IsAvailable = item.IsAvailable,
-                Cuisine = item.Cuisine.ToString()
+                Cuisine = item.Cuisine.ToString(),
+                ImageUrl = item.ImageUrl
             }).ToList();
 
             return menuItemsDto;
@@ -146,7 +147,8 @@ namespace Server.Services
                 ExpirationDate = item.ExpirationDate,
                 Quantity = item.Quantity,
                 IsAvailable = item.IsAvailable,
-                Cuisine = item.Cuisine.ToString()
+                Cuisine = item.Cuisine.ToString(),
+                ImageUrl = item.ImageUrl
             }).ToListAsync();
 
             return menuItemsDto;
